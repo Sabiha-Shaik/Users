@@ -34,7 +34,7 @@ public class UserService {
 	
 	BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
 	
-	private UserDTO mapToUserDTO(User user) {
+	public UserDTO mapToUserDTO(User user) {
         UserDTO userDTO = new UserDTO();
         userDTO.setEmployeeId(user.getEmployeeId());
         userDTO.setFirstName(user.getFirstName());
@@ -130,8 +130,11 @@ public class UserService {
 	    return userRepo.findByEmployeeId(employeeId);
 	}
 
-	public List<User> getUsersByRole(Role role) {
-		return userRepo.findByRole(role);
+	public List<UserDTO> getUsersByRole(Role role) {
+		List<User> users  =userRepo.findByRole(role);
+		return users.stream()
+                .map(this::mapToUserDTO)
+                .collect(Collectors.toList());
 	}
 	
 	public List<Long> findUserEmployeeIds() {
@@ -154,7 +157,23 @@ public class UserService {
 	                .map(this::mapToUserDTO)
 	                .collect(Collectors.toList());
 	    }
-
+	 
+	 public List<UserDTO> getTrainer(){
+	        List<User> trainees = userRepo.findByRole(Role.TRAINER);
+	        return trainees.stream()
+	                .map(this::mapToUserDTO)
+	                .collect(Collectors.toList());
+	         
+	 }
 	    
+	 public void updateUsersRoleToTrainer(List<Long> employeeIds) {
+		    List<User> usersToUpdate = userRepo.findByEmployeeIdIn(employeeIds);
+
+		    for (User user : usersToUpdate) {
+		        user.setRole(Role.TRAINER);
+		    }
+
+		    userRepo.saveAll(usersToUpdate);
+		}
 
 }

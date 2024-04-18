@@ -20,5 +20,5 @@ public interface UserRepo extends JpaRepository<User, Long> {
 		List<User> findByRole(Role role);
 		
 		List<User> findByBusinessUnit(String businessUnit);
-
+		List<User> findByEmployeeIdIn(List<Long> employeeIds);
 }

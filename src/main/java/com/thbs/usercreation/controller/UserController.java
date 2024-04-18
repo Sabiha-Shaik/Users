@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -63,7 +64,7 @@ public class UserController {
 	    }
 	
 	 @GetMapping("/role/trainee")
-	    public List<User> getUsersByRoleId() {
+	    public List<UserDTO> getUsersByRoleId() {
 		 	Role role = Role.USER;
 	        return userService.getUsersByRole(role);
 	    }
@@ -82,6 +83,20 @@ public class UserController {
 	    public List<UserDTO>  findAllUsers() {
 	        return userService.findAllUsers();
 	    }
+	    @GetMapping("/role/trainer")
+		  public List<UserDTO> getTrainer() {
+			 	Role role = Role.TRAINER;
+		        return userService.getUsersByRole(role);
+		    }
+		  @PutMapping("/updateRoleToTrainer")
+		    public String updateUsersRoleToTrainer(@RequestBody List<Long> employeeIds) {
+		        try {
+		            userService.updateUsersRoleToTrainer(employeeIds);
+		            return "Successfully updated roles to TRAINER for the specified users.";
+		        } catch (Exception e) {
+		            return "Failed to update roles: " + e.getMessage();
+		        }
+		    }
 
 
 }
